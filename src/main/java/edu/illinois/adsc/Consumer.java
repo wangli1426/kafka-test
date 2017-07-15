@@ -57,7 +57,7 @@ public class Consumer
 
         KafkaStreams streams = new KafkaStreams(builder, props);
         streams.start();
-        System.out.println("started!");
+        System.out.println("started: " + (System.currentTimeMillis() - start));
 
         System.out.println(streams.toString());
 
