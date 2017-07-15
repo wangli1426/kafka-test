@@ -37,26 +37,26 @@ public class Consumer
         KStream<String, String> source = builder.stream("streams-file-input");
         source.print();
         System.out.println("begin to process the data.");
-        KTable<String, Long> counts = source
-                .flatMapValues(new ValueMapper<String, Iterable<String>>() {
-                    @Override
-                    public Iterable<String> apply(String value) {
-                        return Arrays.asList(value.toLowerCase(Locale.getDefault()).split(" "));
-                    }
-                }).map(new KeyValueMapper<String, String, KeyValue<String, String>>() {
-                    @Override
-                    public KeyValue<String, String> apply(String key, String value) {
-                        return new KeyValue<>(value, value);
-                    }
-                })
-                .groupByKey()
-                .count("Counts");
+//        KTable<String, Long> counts = source
+//                .flatMapValues(new ValueMapper<String, Iterable<String>>() {
+//                    @Override
+//                    public Iterable<String> apply(String value) {
+//                        return Arrays.asList(value.toLowerCase(Locale.getDefault()).split(" "));
+//                    }
+//                }).map(new KeyValueMapper<String, String, KeyValue<String, String>>() {
+//                    @Override
+//                    public KeyValue<String, String> apply(String key, String value) {
+//                        return new KeyValue<>(value, value);
+//                    }
+//                })
+//                .groupByKey()
+//                .count("Counts");
 
         KStream<String, Long> measuredStream = source.map((a, b) -> new KeyValue<>(String.format("%s + %s time: ", a, b), System.currentTimeMillis() - start));
 
         measuredStream.to(Serdes.String(), Serdes.Long(), "streams-wordcount-outputs");
         // need to override value serde to Long type
-        counts.to(Serdes.String(), Serdes.Long(), "streams-wordcount-output");
+//        counts.to(Serdes.String(), Serdes.Long(), "streams-wordcount-output");
 
         KafkaStreams streams = new KafkaStreams(builder, props);
         streams.start();
