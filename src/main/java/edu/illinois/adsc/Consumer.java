@@ -52,11 +52,11 @@ public class Consumer
                 .groupByKey()
                 .count("Counts");
 
-        KStream<String, Long> stream = source.map((a, b) -> new KeyValue<>(a, System.currentTimeMillis() - start));
+        KStream<String, Long> stream = source.map((a, b) -> new KeyValue<>(a + " time", System.currentTimeMillis() - start));
 
-        stream.to(Serdes.String(), Serdes.Long(), "streams-wordcount-output");
+        stream.to(Serdes.String(), Serdes.Long(), "streams-wordcount-outputs");
         // need to override value serde to Long type
-        counts.to(Serdes.String(), Serdes.Long(), "streams-wordcount-outputs");
+        counts.to(Serdes.String(), Serdes.Long(), "streams-wordcount-output");
 
         KafkaStreams streams = new KafkaStreams(builder, props);
         streams.start();
