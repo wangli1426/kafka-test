@@ -52,9 +52,9 @@ public class Consumer
                 .groupByKey()
                 .count("Counts");
 
-        KStream<String, Long> stream = source.map((a, b) -> new KeyValue<>(a + " time", System.currentTimeMillis() - start));
+        KStream<String, Long> measuredStream = source.map((a, b) -> new KeyValue<>(String.format("%s + %s time: ", a, b), System.currentTimeMillis() - start));
 
-        stream.to(Serdes.String(), Serdes.Long(), "streams-wordcount-outputs");
+        measuredStream.to(Serdes.String(), Serdes.Long(), "streams-wordcount-outputs");
         // need to override value serde to Long type
         counts.to(Serdes.String(), Serdes.Long(), "streams-wordcount-output");
 
