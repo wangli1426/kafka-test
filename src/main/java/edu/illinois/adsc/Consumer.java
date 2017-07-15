@@ -19,7 +19,7 @@ public class Consumer
             ip = args[0];
         }
         Properties props = new Properties();
-        props.put(StreamsConfig.APPLICATION_ID_CONFIG, "streams-wordcount");
+        props.put(StreamsConfig.APPLICATION_ID_CONFIG, "streams-wordcount1");
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, ip + ":9092");
         props.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, 0);
         props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
@@ -53,16 +53,17 @@ public class Consumer
                 .count("Counts");
 
         // need to override value serde to Long type
-        System.out.println("begin to publish the results.");
         counts.to(Serdes.String(), Serdes.Long(), "streams-wordcount-outputs");
-        counts.print(Serdes.String(), Serdes.Long());
 
         KafkaStreams streams = new KafkaStreams(builder, props);
         streams.start();
+        System.out.println("started!");
+
+        System.out.println(streams.toString());
 
         // usually the stream application would be running forever,
         // in this example we just let it run for some time and stop since the input data is finite.
-//        Thread.sleep(5000L);
+        Thread.sleep(5000L);
 
         streams.close();
     }
